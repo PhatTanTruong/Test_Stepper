@@ -1,0 +1,166 @@
+$primary: #2196f3;
+$XS: 320px;
+$SM: 480px;
+$MD: 768px;
+$XL: 1170px;
+@mixin Responsive($canvas) {
+  @if $canvas == XS {
+    @media only screen and (min-width: $XS) {
+      @content;
+    }
+  } @else if $canvas == SM {
+    @media only screen and (min-width: $SM) {
+      @content;
+    }
+  } @else if $canvas == MD {
+    @media only screen and (min-width: $MD) {
+      @content;
+    }
+  } @else if $canvas == XL {
+    @media only screen and (min-width: $XL) {
+      @content;
+    }
+  }
+}
+
+@mixin AttributeResponsive($property, $value, $prevProperty, $prevValue) {
+  #{$property}: $value;
+  #{$prevProperty}: $prevValue;
+}
+
+%step-share {
+  @include Responsive(XS) {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    cursor: pointer;
+    border-radius: 4px;
+    position: relative;
+  }
+  @include Responsive(MD) {
+    flex-direction: column;
+    text-align: -webkit-center;
+  }
+}
+
+@mixin title-share($property1, $value1, $property2, $value2) {
+  @include Responsive(XS) {
+    @include AttributeResponsive($property2, $value2, $property1, 0px);
+    width: max-content;
+  }
+  @include Responsive(MD) {
+    @include AttributeResponsive($property1, $value1, $property2, 0px);
+  }
+}
+
+%line-share {
+  @include Responsive(XS) {
+    position: absolute;
+    width: 2px;
+    left: 25px;
+    height: calc(50% - 10px);
+    background-color: $primary;
+    transition: all 0.3s ease;
+  }
+  @include Responsive(MD) {
+    height: 2px;
+    left: unset;
+    top: 25px;
+    width: calc(50% - 10px);
+  }
+}
+@mixin line-before-after-share($property1, $value1, $property2, $value2) {
+  @include Responsive(XS) {
+    @include AttributeResponsive($property2, $value2, $property1, 25px);
+  }
+  @include Responsive(MD) {
+    @include AttributeResponsive($property1, $value1, $property2, 25px);
+  }
+}
+
+%number-share {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 16px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+%active-number-share {
+  @extend %number-share;
+  border: 2px solid $primary;
+  position: relative;
+  color: white;
+}
+
+.step {
+  @extend %step-share;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+
+  &.actived {
+    .number {
+      @extend %active-number-share;
+      background-color: $primary;
+      &::before {
+        content: "";
+        border-radius: 50%;
+        background-color: rgba(33, 150, 243, 0.12);
+        position: absolute;
+        top: -8px;
+        bottom: -8px;
+        left: -8px;
+        right: -8px;
+      }
+    }
+    .line-after {
+      background-color: #bbdefb;
+    }
+    .title {
+      font-weight: 500;
+    }
+  }
+  &.visited .number {
+    @extend %active-number-share;
+    background-color: $primary;
+  }
+
+  &.unvisited {
+    .number {
+      @extend %active-number-share;
+      border: 2px solid #bbdefb;
+      color: $primary;
+    }
+    .line-after,
+    .line-before {
+      background-color: #bbdefb;
+    }
+  }
+  .title {
+    @include title-share(margin-top, 20px, margin-left, 20px);
+  }
+  .line-before {
+    @include line-before-after-share(left, 0, top, 0);
+  }
+  .line-after {
+    @include line-before-after-share(
+      left,
+      calc(50% + 10px),
+      top,
+      calc(50% + 10px)
+    );
+  }
+  .line-before,
+  .line-after {
+    @extend %line-share;
+  }
+
+  &.first-step .line-before,
+  &.last-step .line-after {
+    display: none;
+  }
+}
