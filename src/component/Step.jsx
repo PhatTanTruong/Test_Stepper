@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import "../assets/step.css";
 
 class Step extends Component {
   constructor(props) {

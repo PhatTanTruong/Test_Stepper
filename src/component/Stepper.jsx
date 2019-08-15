@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import "../assets/stepper.css";
 
 class Stepper extends Component {
   constructor(props) {
